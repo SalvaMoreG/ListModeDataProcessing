@@ -1,0 +1,13 @@
+-Wl,--no-as-needed
+
+i.e., in the Makefile in Ubuntu, it should be: 
+
+CFLAGS = $(LOCAL_INC)  -isystem$(ROOTINCDIR) -I$(VIP_COMMON_LIB_DIR)/include/ -I$(CLHEP_BASE_DIR)/include/ -Wl,--no-as-needed
+
+(instead of: CFLAGS = $(LOCAL_INC)  -isystem$(ROOTINCDIR) -I$(VIP_COMMON_LIB_DIR)/include/ -I$(CLHEP_BASE_DIR)/include/)
+
+Without this, reading root files will crash (with some obviously completely incomprehensible error message). 
+Root is beautiful, Makefiles are beautiful, linker flags are beautiful, and I just wasted one hour to find out why my program crashed.......
+
+Oh, and by the way, if you are NOT on Ubuntu, these flags should NOT be there... (nice, isn't it?!)
+

@@ -1,0 +1,28 @@
+#  
+########USER ACTIONS############### 
+# THIS IS FOR THE GmDataTTree output
+#
+#	/gamos/setParam GmDataTTreeUA:EventDataList \ 
+/gamos/setParam GmDataTTreeUA_ForImagingOnly:EventDataList \ 
+EventID InitialTime InitialPosX InitialPosY InitialPosZ
+
+#	/gamos/setParam GmDataTTreeUA:StepDataList \
+/gamos/setParam GmDataTTreeUA_ForImagingOnly:StepDataList \
+EventID \ 
+InitialLocalPosX InitialLocalPosY InitialLocalPosZ \
+InitialLogicalVolume \
+InitialTouchablePosX InitialTouchablePosY InitialTouchablePosZ \
+FinalPosX FinalPosY FinalPosZ \
+InitialUnitID \
+InitialTotalEnergy FinalTotalEnergy \
+AccumulatedEnergyDeposited \
+InitialTime \
+
+# Needed for hit-qualification only:
+# 	InitialPosX InitialPosY InitialPosZ \
+#	InitialDirX InitialDirY InitialDirZ \
+#	FinalDirX FinalDirY FinalDirZ \
+#	ParentTrackID CreatorProcess \
+#	Particle TrackID \
+#	InitialProcess FinalProcess 
+

@@ -1,0 +1,86 @@
+sources = $(wildcard src/*.cc)
+objects = $(subst src/,tmp/,$(patsubst %.cc,%.o,$(sources)))
+exec = $(subst src/,bin/,$(subst .cxx,,$(wildcard src/*.cxx)))
+
+outlib = ./lib/libLMDataProcessinglib.a
+
+CC = g++
+LOCAL_INC = -Iinclude/
+
+# VIP07, VIP04:
+#	ROOTLIBS = $(shell root-config --libs)
+#	ROOTINCDIR = $(shell root-config --incdir)
+# VIP06 (ROOT6): (set by envir_VIP06.sh)
+#	ROOTLIBS = ${VIP06ROOTLIBS}
+#	ROOTINCDIR = ${VIP06ROOTINCDIR}
+# VIP09 (ROOT6): (set by envir_VIP09.sh)
+ROOTLIBS = ${VIP09ROOTLIBS}
+ROOTINCDIR = ${VIP09ROOTINCDIR}
+
+# VIP09, VIP06, VIP04 (modern Ubuntu):
+INCFLAGS = $(LOCAL_INC) -isystem$(ROOTINCDIR) -I$(VIP_COMMON_LIB_DIR)/include/ -Wl,--no-as-needed -std=c++11
+# VIP07 (very old Scientific Linux):
+#	INCFLAGS = $(LOCAL_INC) -isystem$(ROOTINCDIR)
+
+VIPLIBS = -L$(VIP_COMMON_LIB_DIR)/lib/ -lVIPcommonlib
+
+# VIP09, VIP06, VIP04 (modern Ubuntu):
+LDFLAGS = $(LOCAL_INC) -std=c++11
+# VIP07 (very old Scientific Linux):
+#	LDFLAGS = $(LOCAL_INC) -L$(ROOTLIBS) -L$(BOOST_DIR) -lboost_filesystem -DUSING_BOOST="1" 
+
+# VIP09, VIP06, VIP04 (modern Ubuntu):
+STUPID_ADDITIONAL_FLAG = -std=c++11
+# VIP07 (very old Scientific Linux):
+#	STUPID_ADDITIONAL_FLAG = -DUSING_BOOST="1"
+
+all: $(objects) $(exec) $(outlib)
+	@echo all done!
+
+$(objects): tmp/%.o: src/%.cc  
+	@echo compiling $@
+#	@$(CC) -c $(INCFLAGS) $< -o $@
+	@$(CC) -c $(INCFLAGS) $(STUPID_ADDITIONAL_FLAG) $< -o $@ 
+
+$(exec): bin/% : src/%.cxx $(objects)
+	@echo compiling $@
+	@$(CC) $(INCFLAGS) $< $(objects)  -o $@ $(LDFLAGS) $(ROOTLIBS) $(VIPLIBS)
+#	@$(CC) $(objects) $(INCFLAGS) $(LDFLAGS) $< -o $@ $(LDFLAGS) $(ROOTLIBS) 
+	@echo $(@F) compiled.
+
+libobj = tmp/MySimpleGmSDTTree.o
+
+$(outlib): $(libobj)
+	ar rcs $(outlib) $(libobj)
+	ranlib $(outlib)
+	ar tv $(outlib)
+
+$(notdir $(exec)): % : bin/%
+
+$(notdir $(objects)):%:tmp/%
+
+tmp/cc_%.d: src/%.cc 
+	@$(CC) -MM $(INCFLAGS) $< | sed 's:$*\.o[ \:]:tmp/& $@:g' >  $@
+
+tmp/cxx_%.d: src/%.cxx
+	@$(CC) -MM $(INCFLAGS) $< | sed 's:\.o::g' | sed 's:$*[ \:]:bin/& $@:g'  > $@
+
+-include $(subst src/,tmp/cc_,$(patsubst %.cc,%.d,$(wildcard src/*.cc)))
+-include $(subst src/,tmp/cxx_,$(patsubst %.cxx,%.d,$(wildcard src/*.cxx)))
+
+.PHONY: nobin
+nobin: $(objects)
+
+.PHONY: bin
+bin: $(exec)
+
+.PHONY: cleanemacs
+cleanemacs:
+	@-rm *~ */*~ &> /dev/null
+
+.PHONY: clean
+clean:
+	@-rm tmp/*.o tmp/*.d bin/* lib/* &> /dev/null
+
+.PHONY: cleanall
+cleanall:clean cleanemacs

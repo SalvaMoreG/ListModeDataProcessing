@@ -1,0 +1,14 @@
+
+src/DetHitReconstruction.cc:	io_hit.realX = aTree->Step_FinalPosX->at(in_stepIndex);
+src/DetHitReconstruction.cc:	io_hit.realY = aTree->Step_FinalPosY->at(in_stepIndex);
+src/DetHitReconstruction.cc:	io_hit.realZ = aTree->Step_FinalPosZ->at(in_stepIndex);
+
+src/DetHitReconstruction.cc:	io_hit.X = aTree->Step_InitialTouchablePosX->at(in_stepIndex);
+src/DetHitReconstruction.cc:	io_hit.Y = aTree->Step_InitialTouchablePosY->at(in_stepIndex);
+src/DetHitReconstruction.cc:	io_hit.Z = aTree->Step_InitialTouchablePosZ->at(in_stepIndex);
+
+NOT USED: 
+src/DetHitReconstruction.cc:	//	io_hit.locX = aTree->Step_InitialLocalPosX->at(in_stepIndex);
+src/DetHitReconstruction.cc:	//	io_hit.locY = aTree->Step_InitialLocalPosY->at(in_stepIndex);
+src/DetHitReconstruction.cc:	//	io_hit.locZ = aTree->Step_InitialLocalPosZ->at(in_stepIndex);
+

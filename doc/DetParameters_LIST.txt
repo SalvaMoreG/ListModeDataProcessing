@@ -1,0 +1,24 @@
+
+meas_T       1000 ps			FOR CONVERSION ROOT TO HITS
+dead_T       1000 ps			FOR CONVERSION ROOT TO HITS
+trig_E          0.010 MeV		FOR CONVERSION ROOT TO HITS
+
+volumes         crystal_1 crystal_2		FOR READING ROOT OR LM AND FOR PET COINCIDENCE FINDING
+	// 
+	// ROOT input: DetHitReconstruction::ProcessStep(...)
+	// 		m_scanner->GetDetectorFromVolume( aTree->Step_InitialLogicalVolume->at(in_stepIndex) 
+	// LM input: ProcessDataClass::LoadLM(...)
+	//		m_scanner->GetDetectorTypeFromVolume( Hit.volumeName );  (field in LM file)
+	// PET_CoincidenceFinder::FindCoincidence(...)
+	//      const Detector* myDetector = m_scanner->GetDetector( it->second.detectorType );
+	//
+
+sour_E 	        0.511 MeV		FOR PET COINCIDENCE FINDING
+rang_E 	        0.100 MeV		FOR PET COINCIDENCE FINDING
+
+coin_T      10000 ps		    FOR PET COINCIDENCE FINDING
+
+merg_D 		    0.0 mm			FOR PET COINCIDENCE FINDING
+
+
+

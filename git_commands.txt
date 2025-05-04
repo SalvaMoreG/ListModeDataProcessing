@@ -1,0 +1,20 @@
+
+# Upload to gitlab.pic:
+#
+git init
+git add doc/ envirs_mkfls/ include/ python/ root/ scripts/getresults_ListModeProc.sh src/
+git commit .
+
+git remote add origin git@gitlab02.pic.es:vip/vipanalysiscode/trunk/ListModeDataProcessing.git
+git push --set-upstream origin master
+
+# Clone from gitlab.pic (don't forget the temp!)
+#
+git clone git@gitlab02.pic.es:vip/vipanalysiscode/trunk/ListModeDataProcessing.git temp
+mv temp/.git .
+/bin/rm -rf temp/
+
+git status .
+git checkout -- git_commands.txt
+
+

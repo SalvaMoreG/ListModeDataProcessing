@@ -1,0 +1,68 @@
+sources = $(wildcard src/*.cc)
+objects = $(subst src/,tmp/,$(patsubst %.cc,%.o,$(sources)))
+exec = $(subst src/,bin/,$(subst .cxx,,$(wildcard src/*.cxx)))
+
+outlib = ./lib/libLMDataProcessinglib.a
+
+CC = g++
+LOCAL_INC = -Iinclude/
+
+ROOTLIBS = ${Ubuntu16ROOTLIBS}
+ROOTINCDIR = ${Ubuntu16ROOTINCDIR}
+
+INCFLAGS = $(LOCAL_INC) -isystem$(ROOTINCDIR) -I$(VIP_COMMON_LIB_DIR)/include/ -Wl,--no-as-needed -std=c++11
+
+VIPLIBS = -L$(VIP_COMMON_LIB_DIR)/lib/ -lVIPcommonlib
+
+LDFLAGS = $(LOCAL_INC) -std=c++11
+
+STUPID_ADDITIONAL_FLAG = -std=c++11
+
+all: $(objects) $(exec) $(outlib)
+	@echo all done!
+
+$(objects): tmp/%.o: src/%.cc  
+	@echo compiling $@
+	@$(CC) -c $(INCFLAGS) $(STUPID_ADDITIONAL_FLAG) $< -o $@ 
+
+$(exec): bin/% : src/%.cxx $(objects)
+	@echo compiling $@
+	@$(CC) $(INCFLAGS) $< $(objects)  -o $@ $(LDFLAGS) $(ROOTLIBS) $(VIPLIBS)
+	@echo $(@F) compiled.
+
+libobj = tmp/MySimpleGmSDTTree.o
+
+$(outlib): $(libobj)
+	ar rcs $(outlib) $(libobj)
+	ranlib $(outlib)
+	ar tv $(outlib)
+
+$(notdir $(exec)): % : bin/%
+
+$(notdir $(objects)):%:tmp/%
+
+tmp/cc_%.d: src/%.cc 
+	@$(CC) -MM $(INCFLAGS) $< | sed 's:$*\.o[ \:]:tmp/& $@:g' >  $@
+
+tmp/cxx_%.d: src/%.cxx
+	@$(CC) -MM $(INCFLAGS) $< | sed 's:\.o::g' | sed 's:$*[ \:]:bin/& $@:g'  > $@
+
+-include $(subst src/,tmp/cc_,$(patsubst %.cc,%.d,$(wildcard src/*.cc)))
+-include $(subst src/,tmp/cxx_,$(patsubst %.cxx,%.d,$(wildcard src/*.cxx)))
+
+.PHONY: nobin
+nobin: $(objects)
+
+.PHONY: bin
+bin: $(exec)
+
+.PHONY: cleanemacs
+cleanemacs:
+	@-rm *~ */*~ &> /dev/null
+
+.PHONY: clean
+clean:
+	@-rm tmp/*.o tmp/*.d bin/* lib/* &> /dev/null
+
+.PHONY: cleanall
+cleanall:clean cleanemacs

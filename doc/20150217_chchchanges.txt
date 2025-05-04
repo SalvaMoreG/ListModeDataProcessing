@@ -1,0 +1,49 @@
+
+Many changes have been implemented in january and februari of 2015.
+A summary: 
+
+1) Instead of three XXX_HitReconstruction classes, 
+	there is now only 1 "DetHitReconstruction" which inherits from HitReconstructionClass
+	(so much code-duplication (PEM/PET but also CC) has been removed.) 
+
+2) Code duplication from PET/PEM/CC_DoProcess has been moved to general DoProcess base class, 
+	only specific code stays in detector-specific code
+
+3) ProcessDataClass has been updated A LOT. Now, it is much easier to read in and write out events in "LM" format 
+	(instead of reading in ROOT files). This is now possible for PET, PEM, CC and "CCPET"
+
+4) The general "BaseClass" (which basically was the baseclass for all other classes and stored pointer to "general objects" (i.e. "histograms" etc..) has been removed. 
+   Each class only stores pointers to what it needs (it can still be optimized more probably)
+
+5) The old DetectorParameterClass and its subclasses (PET/PEM/CC_detector) have been removed. 
+	- To avoid (a lot!) of code duplication (especially PET/PEM)
+	- To seperate scanner_type (PET/PEM/CC/CCPET) from detector-type (scatterer/absorber) and coincidence type (PET or CC)
+	TODO: this still can be improved much. 
+
+   Instead of this, we now have the Scanner class, the DetectorFactory class and the Detector class
+
+6) For PET/PEM, there is only one PET_EvClassification, PET_CoincidenceClassification and PET_CoincidenceFinder
+  (again: to avoid code-duplication, these codes do exactly the same for PET and PEM)
+
+7) Other: 
+	- some variable names and method-names have changed
+	- some base-classes have changed methods (some methods are moved to be specific for some subclasses)
+	- a lot of "double" and "string" and class-type parameters for methods calls have been made "const &"
+	- destructors of baseclasses are now all virtual
+	- added inline functions 
+	- made private data and methods really private
+	- TODO: check memory leaks!! Are all objects deleted?
+	- ...
+
+
+
+
+	
+
+
+
+
+
+
+
+

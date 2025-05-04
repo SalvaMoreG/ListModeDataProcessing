@@ -1,0 +1,5 @@
+
+	io_hit.X = aTree->Step_InitialTouchablePosX->at(in_stepIndex);
+	io_hit.Y = aTree->Step_InitialTouchablePosY->at(in_stepIndex);
+	io_hit.Z = aTree->Step_InitialTouchablePosZ->at(in_stepIndex);
+
